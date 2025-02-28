@@ -1,8 +1,13 @@
 provider "aws" {
-  region = "us-east-1" # Change to your region
+  region = "us-east-1"
 }
 
-# Step 1: Create IAM Policy for Launch Role
+variable "account_id" {
+  description = "AWS Account ID"
+  type        = string
+}
+
+# Step 1: IAM Policy for Launch Role
 resource "aws_iam_policy" "s3_servicecatalog_policy" {
   name        = "S3ResourceCreationAndArtifactAccessPolicy"
   description = "Policy to allow Service Catalog access to create S3 resources"
@@ -57,7 +62,8 @@ resource "aws_iam_policy" "s3_servicecatalog_policy" {
 }
 POLICY
 }
-# Step 2: Create IAM Role for Launch Constraint
+
+# Step 2: IAM Role for Launch Constraint
 resource "aws_iam_role" "servicecatalog_launch_role" {
   name               = "SCLaunch-S3product"
   assume_role_policy = <<POLICY
@@ -98,7 +104,6 @@ resource "aws_iam_role_policy_attachment" "attach_s3_policy" {
   policy_arn = aws_iam_policy.s3_servicecatalog_policy.arn
 }
 
-
 # Step 3: Create AWS Service Catalog Portfolio
 resource "aws_servicecatalog_portfolio" "s3_portfolio" {
   name        = "S3 bucket"
@@ -117,7 +122,7 @@ resource "aws_servicecatalog_product" "s3_product" {
   provisioning_artifact_parameters {
     name        = "v1.0"
     description = "Base Version"
-    template_url = "https://terraform-backend-statefil.s3.us-east-1.amazonaws.com/s3bucket.tar.gz" # Update with your S3 URL
+    template_url = "https://terraform-backend-statefil.s3.us-east-1.amazonaws.com/s3bucket.tar.gz" # Update this URL
   }
 
   support_description = "Contact the IT department for issues deploying or connecting to this product."
@@ -138,6 +143,6 @@ resource "aws_servicecatalog_constraint" "s3_launch_constraint" {
   type         = "LAUNCH"
 
   parameters = jsonencode({
-    "RoleArn" = aws_iam_role.sc_launch_role.arn
+    "RoleArn" = aws_iam_role.servicecatalog_launch_role.arn
   })
 }
