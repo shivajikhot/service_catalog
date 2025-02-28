@@ -122,7 +122,7 @@ resource "aws_servicecatalog_product" "s3_product" {
     name         = "v1.0"
     description  = "Initial version of the S3 bucket product"
     type         = "EXTERNAL"
-    template_url = "https://terraform-backend-statefil.s3.us-east-1.amazonaws.com/s3bucket.tar.gz"
+    template_url = "https://terraform-backend-statefil.s3.us-east-1.amazonaws.com/service-catalog_ec2.tar.gz"
     disable_template_validation = true
   }
 }
