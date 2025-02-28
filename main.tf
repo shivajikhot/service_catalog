@@ -136,6 +136,25 @@ resource "aws_servicecatalog_product_portfolio_association" "s3_product_associat
   portfolio_id = aws_servicecatalog_portfolio.s3_portfolio.id
   product_id   = aws_servicecatalog_product.s3_product.id
 }
+#GRANT access to the GROUP
+resource "aws_iam_group" "servicecatalog_group" {
+  name = "SCGroup"
+}
+resource "aws_iam_group_policy_attachment" "sc_group_policy_attachment" {
+  group      = aws_iam_group.servicecatalog_group.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSServiceCatalogEndUserFullAccess"
+}
+resource "aws_iam_group_policy_attachment" "resource_group_policy_attachment" {
+  group      = aws_iam_group.servicecatalog_group.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSResourceGroupsReadOnlyAccess"
+}
+
+
+resource "aws_servicecatalog_principal_portfolio_association" "portfolio_access_group" {
+  portfolio_id   = aws_servicecatalog_portfolio.s3_portfolio.id
+  principal_arn  = aws_iam_group.servicecatalog_group.arn
+  principal_type = "IAM"
+}
 
 # Step 6: Add Launch Constraint
 resource "aws_servicecatalog_constraint" "s3_launch_constraint" {
@@ -147,3 +166,5 @@ resource "aws_servicecatalog_constraint" "s3_launch_constraint" {
     "RoleArn" = aws_iam_role.servicecatalog_launch_role.arn
   })
 }
+
+
