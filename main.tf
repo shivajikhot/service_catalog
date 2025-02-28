@@ -113,23 +113,23 @@ resource "aws_servicecatalog_portfolio" "s3_portfolio" {
 
 # Step 4: Create AWS Service Catalog Product (External Product Type)
 resource "aws_servicecatalog_product" "s3_product" {
-  name        = "Simple S3 bucket"
-  owner       = "IT"
-  description = "Terraform product containing an Amazon S3 bucket."
-  distributor = ""
-  type        = "EXTERNAL"
+  name                = "Simple S3 bucket"
+  owner               = "IT"
+  description         = "Terraform product containing an Amazon S3 bucket."
+  distributor         = ""
+  type                = "EXTERNAL"
   support_description = "Contact the IT department for issues deploying or connecting to this product."
   support_email       = "ITSupport@example.com"
   support_url         = "https://wiki.example.com/IT/support"
-}
-# Step 4.1: Define the provisioning artifact for the product
-resource "aws_servicecatalog_provisioning_artifact" "s3_provisioning_artifact" {
-  name       = "v1.0"
-  product_id = aws_servicecatalog_product.s3_product.id
-  type       = "EXTERNAL"
 
-  template_url = "https://$https://terraform-backend-statefil.s3.us-east-1.amazonaws.com/s3bucket.tar.gz"
+  provisioning_artifact_parameters {
+    name         = "v1.0"
+    description  = "Initial version of the S3 bucket product"
+    type         = "EXTERNAL"
+    template_url = "https://terraform-backend-statefil.s3.us-east-1.amazonaws.com/s3bucket.tar.gz"
+  }
 }
+
 # Step 5: Associate Product with Portfolio
 resource "aws_servicecatalog_product_portfolio_association" "s3_product_association" {
   portfolio_id = aws_servicecatalog_portfolio.s3_portfolio.id
