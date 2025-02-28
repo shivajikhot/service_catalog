@@ -2,10 +2,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-variable "account_id" {
-  description = "AWS Account ID"
-  type        = string
-}
 
 # Step 1: IAM Policy for Launch Role
 resource "aws_iam_policy" "s3_servicecatalog_policy" {
@@ -81,15 +77,15 @@ resource "aws_iam_role" "servicecatalog_launch_role" {
         {
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::${var.account_id}:root"
+                "AWS": "arn:aws:iam::575108922676:root"
             },
             "Action": "sts:AssumeRole",
             "Condition": {
                 "StringLike": {
                     "aws:PrincipalArn": [
-                        "arn:aws:iam::${var.account_id}:role/TerraformEngine/TerraformExecutionRole*",
-                        "arn:aws:iam::${var.account_id}:role/TerraformEngine/ServiceCatalogExternalParameterParserRole*",
-                        "arn:aws:iam::${var.account_id}:role/TerraformEngine/ServiceCatalogTerraformOSParameterParserRole*"
+                        "arn:aws:iam::575108922676:role/TerraformEngine/TerraformExecutionRole*",
+                        "arn:aws:iam::575108922676:role/TerraformEngine/ServiceCatalogExternalParameterParserRole*",
+                        "arn:aws:iam::575108922676:role/TerraformEngine/ServiceCatalogTerraformOSParameterParserRole*"
                     ]
                 }
             }
